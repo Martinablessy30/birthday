@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For My Thangom 💛</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:black;
+color:white;
+text-align:center;
+overflow:auto;
+padding:10px;
+}
+
+.screen{display:none;}
+.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;}
+
+input{
+padding:10px;
+border:none;
+border-bottom:2px solid white;
+background:none;
+color:white;
+outline:none;
+width:80%;
+max-width:300px;
+}
+
+button{
+margin-top:15px;
+padding:12px;
+background:white;
+color:black;
+border:none;
+cursor:pointer;
+width:80%;
+max-width:300px;
+font-size:16px;
+}
+
+.popup{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.85);
+display:flex;
+justify-content:center;
+align-items:center;
+opacity:0;
+pointer-events:none;
+transition:0.3s;
+}
+.popup.show{opacity:1;pointer-events:auto;}
+
+.popup-box{
+background:white;
+color:black;
+padding:20px;
+border-radius:10px;
+width:80%;
+max-width:300px;
+}
+
+/* chat */
+.chatBox{
+width:100%;
+max-width:400px;
+background:#111;
+padding:10px;
+border-radius:10px;
+height:60vh;
+overflow:auto;
+}
+
+.msg{
+padding:10px;
+margin:6px;
+border-radius:10px;
+max-width:80%;
+background:#202c33;
+}
+
+/* proposal */
+#noBtn{position:absolute;}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* hearts */
+.heart{
+position:absolute;
+font-size:28px;
+cursor:pointer;
+color:yellow;
+}
+
+/* gallery */
+#gallery img,
+#memories img{
+width:90%;
+max-width:300px;
+margin:5px;
+border-radius:10px;
+}
+
+/* ending */
+#finalEnd h1{
+font-size:50px;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.2);}
+100%{transform:scale(1);}
+}
+
+/* sparkle */
+.spark{
+position:absolute;
+font-size:18px;
+animation:floatUp 2s linear;
+}
+
+@keyframes floatUp{
+from{transform:translateY(0);opacity:1;}
+to{transform:translateY(-150px);opacity:0;}
+}
+
+.fire{
+position:absolute;
+width:6px;
+height:6px;
+border-radius:50%;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- LOGIN -->
+<div id="login" class="screen active">
+<h2>Hey Umar 👀</h2>
+<p>Enter the password</p>
+<input type="password" id="pass">
+<button onclick="check()">Enter</button>
+</div>
+
+<!-- CHAT -->
+<div id="chat" class="screen">
+<div class="chatBox" id="chatBox"></div>
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+<div class="popup-box" id="popupText"></div>
+</div>
+
+<!-- PROPOSAL -->
+<div id="proposal" class="popup">
+<div class="popup-box" id="proposalBox">
+<h2>Will you be my man forever? 💛🥺</h2>
+<div class="btns">
+<button onclick="accept()">Yes 💖</button>
+<button id="noBtn">No 😏</button>
+</div>
+</div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+<h2>Collect 10 hearts 💛</h2>
+<p id="score">0</p>
+</div>
+
+<!-- SURPRISE -->
+<div id="surpriseBtn" class="screen">
+<button onclick="fakeSurprise()">Click here for your surprise 😏</button>
+</div>
+
+<!-- UPLOAD -->
+<div id="uploadScreen" class="screen">
+<h2>Add your favorite pictures 💛</h2>
+<input type="file" id="fileInput" multiple>
+<div id="gallery"></div>
+<button onclick="nextMessage()">Continue 💛</button>
+</div>
+
+<!-- FINAL MESSAGE -->
+<div id="finalScreen" class="screen">
+<div id="finalMessage"></div>
+<button onclick="agree()">Agree 💛</button>
+</div>
+
+<!-- MEMORIES -->
+<div id="memories" class="screen">
+<h2>Last Year Memories 💛</h2>
+<img id="memoryImg">
+</div>
+
+<!-- FUNNY -->
+<div id="funny" class="screen">
+<h2>One last question… 😏</h2>
+<button onclick="funnyYes()">Will you still tolerate me? 😂</button>
+</div>
+
+<!-- EMOTIONAL -->
+<div id="emotional" class="screen">
+<h2>No matter what happens…<br>I choose you. Always. 💛</h2>
+<button onclick="seal()">Seal this promise 💛</button>
+</div>
+
+<!-- FINAL -->
+<div id="finalEnd" class="screen">
+<h1>💛</h1>
+<h2>Forever starts now ✨</h2>
+</div>
+
+<script>
+
+function showPopup(text){
+popupText.innerText=text;
+popup.classList.add("show");
+setTimeout(()=>popup.classList.remove("show"),1500);
+}
+
+function show(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function check(){
+if(pass.value==="thangom"){
+showPopup("Correct 💛");
+
+let music=bgm;
+music.volume=0;
+music.play().catch(()=>{});
+
+let v=0;
+let fade=setInterval(()=>{
+if(v<0.4){v+=0.05; music.volume=v;}
+else clearInterval(fade);
+},200);
+
+setTimeout(startChat,1500);
+}else showPopup("Wrong ❌");
+}
+
+function startChat(){
+show("chat");
+
+let msgs=[
+"Hey Thangom 💛",
+"Happy Birthday my love ❤️",
+"You are my sunshine 🌙☀️",
+"I love you forever 💛"
+];
+
+let i=0;
+
+let int=setInterval(()=>{
+if(i<msgs.length){
+let d=document.createElement("div");
+d.className="msg";
+d.innerText=msgs[i];
+chatBox.appendChild(d);
+chatBox.scrollTop=chatBox.scrollHeight;
+i++;
+}else{
+clearInterval(int);
+setTimeout(showProposal,1000);
+}
+},1200);
+}
+
+function showProposal(){
+proposal.classList.add("show");
+moveNo();
+}
+
+function accept(){
+proposal.classList.remove("show");
+showPopup("Yes, you are mine forever 💛");
+setTimeout(()=>showPopup("Shall we play a game? 🎮"),1500);
+setTimeout(startGame,3000);
+}
+
+function moveNo(){
+noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
+noBtn.style.top=Math.random()*(window.innerHeight-100)+"px";
+}
+noBtn.onmouseover=moveNo;
+noBtn.onclick=moveNo;
+
+let count=0;
+function startGame(){
+show("game");
+
+let spawn=setInterval(()=>{
+let h=document.createElement("div");
+h.innerText="💛";
+h.className="heart";
+
+h.style.left=Math.random()*(window.innerWidth-40)+"px";
+h.style.top=Math.random()*(window.innerHeight-40)+"px";
+
+h.onclick=function(){
+this.remove();
+count++;
+score.innerText=count;
+
+if(count>=10){
+clearInterval(spawn);
+show("surpriseBtn");
+}
+};
+
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),3000);
+
+},500);
+}
+
+function fakeSurprise(){
+showPopup("Sorry babe… no surprise found 😂");
+setTimeout(()=>showPopup("Ok wait… add your favorite pictures 💛"),1500);
+setTimeout(()=>show("uploadScreen"),3000);
+}
+
+fileInput.addEventListener("change", function(){
+gallery.innerHTML="";
+Array.from(this.files).forEach(file=>{
+let img=document.createElement("img");
+img.src=URL.createObjectURL(file);
+gallery.appendChild(img);
+});
+});
+
+function nextMessage(){
+show("finalScreen");
+
+finalMessage.innerHTML = `
+<p>Yes… I love these pictures too 💛<br>They mean so much to me 🥺</p>
+<p>I want to create more memories with you ❤️<br>I don’t want us to fight anymore</p>
+<ol>
+<li>Don’t use bad words</li>
+<li>Don’t blame me</li>
+<li>Don’t insult me</li>
+<li>Make me smile daily 💛</li>
+<li>Make me proud</li>
+</ol>
+`;
+}
+
+function agree(){
+showPopup("Love you most babe 💛🥺");
+setTimeout(startMemories,2000);
+}
+
+let imgs=["img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"];
+let idx=0;
+
+function startMemories(){
+show("memories");
+
+let el=memoryImg;
+
+setInterval(()=>{
+el.src=imgs[idx];
+idx=(idx+1)%imgs.length;
+},2000);
+
+setTimeout(()=>show("funny"),10000);
+}
+
+function funnyYes(){
+showPopup("Too late now 😌 you’re stuck with me forever 💛");
+setTimeout(()=>show("emotional"),2000);
+}
+
+function seal(){
+show("finalEnd");
+
+// fireworks
+for(let i=0;i<80;i++){
+let f=document.createElement("div");
+f.className="fire";
+f.style.background=`hsl(${Math.random()*360},100%,50%)`;
+f.style.left="50%";
+f.style.top="50%";
+
+let angle=Math.random()*2*Math.PI;
+let dist=Math.random()*300;
+
+f.animate([
+{transform:'translate(0,0)'},
+{transform:`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`}
+],{duration:1000});
+
+document.body.appendChild(f);
+setTimeout(()=>f.remove(),1000);
+}
+
+// spark hearts
+setInterval(()=>{
+let s=document.createElement("div");
+s.className="spark";
+s.innerText="💛";
+s.style.left=Math.random()*100+"vw";
+s.style.top=Math.random()*100+"vh";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),2000);
+},300);
+
+// final popup
+setTimeout(()=>{
+showPopup("Many more happy returns of the day 💛🎂");
+},1500);
+}
+
+</script>
+</body>
+</html>
